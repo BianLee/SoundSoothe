@@ -9,8 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@headlessui/react": "^1.7.19",
     "@heroicons/react": "^2.1.3",
+=======
+    "@google-cloud/speech": "^6.5.0",
+>>>>>>> 35de11df397300420ba42d2c5cc95ada36f06b25
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
