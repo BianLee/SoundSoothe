@@ -13,12 +13,21 @@ export default async function handler(req, res) {
   }
 
   try {
+    console.log("hello");
+    /* 
     const credentials = JSON.parse(
       Buffer.from(process.env.GOOGLE_CLOUD_CREDENTIALS, "base64").toString(
         "ascii"
       )
     );
-    const client = new SpeechClient({ credentials });
+    */
+    const client = new SpeechClient({
+      keyFilename: "../hackdavis24-421623-44db182a59f8.json",
+    });
+
+    // const client = new SpeechClient({ credentials });
+
+    console.log("got here");
 
     const audioBase64 = req.body.audio;
     if (!audioBase64 || typeof audioBase64 !== "string") {
@@ -26,7 +35,13 @@ export default async function handler(req, res) {
     }
 
     const audioBytes = Buffer.from(audioBase64, "base64");
+    console.log("Audio Buffer Length:", audioBytes.length); // Debugging buffer size
+
     if (!audioBytes || audioBytes.length === 0) {
+      console.log(
+        "Audio Buffer Content:",
+        audioBytes.toString("base64").substring(0, 100)
+      ); // Sample logging
       return res
         .status(400)
         .json({ error: "Failed to convert audio data to Buffer" });
@@ -34,8 +49,8 @@ export default async function handler(req, res) {
 
     const audio = { content: audioBytes };
     const config = {
-      encoding: "LINEAR16",
-      sampleRateHertz: 16000,
+      encoding: "WEBM OPUS",
+      sampleRateHertz: 48000,
       languageCode: "en-US",
     };
     const request = { audio: audio, config: config };
