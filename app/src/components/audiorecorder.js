@@ -49,9 +49,12 @@ export default function AudioRecorder() {
         },
         body: JSON.stringify({ audio: base64String }),
       });
-      const data = await res.json();
+      const data = await res;
+      console.log(typeof data);
       console.log(data);
-      setTranscription(data); // Assuming 'transcript' is the key for the transcription text
+      console.log(stringify(data));
+      const strData = JSON.stringify(data);
+      setTranscription(strData);
     };
     reader.readAsDataURL(audioData);
   };
@@ -84,12 +87,11 @@ export default function AudioRecorder() {
             </audio>
           </div>
         )}
-        {transcription && (
-          <div className="mt-4 w-full p-4 bg-white rounded-lg shadow-lg text-gray-800">
-            <h3 className="text-lg font-semibold">Transcription:</h3>
-            <p>{transcription}</p>
-          </div>
-        )}
+
+        <div className="mt-4 w-full p-4 bg-white rounded-lg shadow-lg text-gray-800">
+          <h3 className="text-lg font-semibold">Transcription:</h3>
+          <p>{transcription}</p>
+        </div>
       </div>
     </div>
   );
