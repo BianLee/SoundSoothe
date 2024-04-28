@@ -21,7 +21,7 @@ import {
 
 const navigation = [
   { name: "App", href: "/app" },
-  { name: "About", href: "/about" },
+  { name: "Voice", href: "/voice" },
 ];
 const features = [
   {
@@ -167,11 +167,7 @@ export default function Landing() {
             ))}
           </div>
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Link href="/signin">
-              <p className="text-sm font-semibold leading-6 text-white">
-                Log in <span aria-hidden="true">&rarr;</span>
-              </p>
-            </Link>
+          
           </div>
         </nav>
         <Dialog
