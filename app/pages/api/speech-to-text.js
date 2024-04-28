@@ -1,5 +1,5 @@
 import { SpeechClient } from "@google-cloud/speech";
-import axios from 'axios';
+import axios from "axios";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     const client = new SpeechClient({
-      keyFilename: "../hackdavis24-421623-44db182a59f8.json",
+      keyFilename: "../key.json",
     });
 
     const audioBytes = Buffer.from(req.body.audio, "base64");
@@ -33,13 +33,18 @@ export default async function handler(req, res) {
     console.log("Transcription:", transcription);
 
     // Send transcription to Flask backend
-    const backendUrl = 'http://localhost:8080/api/generate_music';
+    const backendUrl = "http://localhost:8080/api/generate_music";
     const backendResponse = await axios.post(backendUrl, { transcription });
 
     // Send backend response back to the client, if needed
-    res.status(200).json({ message: 'Transcription processed', backendData: backendResponse.data });
+    res.status(200).json({
+      message: "Transcription processed",
+      backendData: backendResponse.data,
+    });
   } catch (error) {
     console.error("Error transcribing audio:", error);
-    res.status(500).json({ error: "Error processing your request", details: error.message });
+    res
+      .status(500)
+      .json({ error: "Error processing your request", details: error.message });
   }
 }
