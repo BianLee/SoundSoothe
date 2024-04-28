@@ -36,6 +36,7 @@ export default async function handler(req, res) {
       scriptPath: "",
       args: [transcription],
     };
+    console.log(options);
 
     PythonShell.run("main.py", options, function (err, results) {
       if (err) {
