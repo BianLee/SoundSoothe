@@ -1,5 +1,5 @@
-import { PythonShell } from "python-shell";
 import { SpeechClient } from "@google-cloud/speech";
+import axios from 'axios';
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -29,29 +29,17 @@ export default async function handler(req, res) {
       .map((result) => result.alternatives[0].transcript)
       .join("\n");
 
-    // Now pass this transcription as a prompt to the music generation script
-    const options = {
-      mode: "text",
-      pythonOptions: ["-u"], // unbuffered stdout
-      scriptPath: "",
-      args: [transcription],
-    };
-    console.log(options);
+    // Output transcription for verification
+    console.log("Transcription:", transcription);
 
-    PythonShell.run("main.py", options, function (err, results) {
-      if (err) {
-        console.error("Error in music generation:", err);
-        return res
-          .status(500)
-          .json({ error: "Failed to generate music", details: err.message });
-      } else {
-        res.status(200).json({ transcription, audioFile: results[0] });
-      }
-    });
+    // Send transcription to Flask backend
+    const backendUrl = 'http://localhost:8080/api/generate_music';
+    const backendResponse = await axios.post(backendUrl, { transcription });
+
+    // Send backend response back to the client, if needed
+    res.status(200).json({ message: 'Transcription processed', backendData: backendResponse.data });
   } catch (error) {
     console.error("Error transcribing audio:", error);
-    res
-      .status(500)
-      .json({ error: "Error processing your request", details: error.message });
+    res.status(500).json({ error: "Error processing your request", details: error.message });
   }
 }
