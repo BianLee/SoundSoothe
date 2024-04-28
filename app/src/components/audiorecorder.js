@@ -57,14 +57,24 @@ export default function AudioRecorder() {
   };
 
   return (
-    <div>
-      <button onClick={toggleRecording}>
+    <div className="bg-gray-100 p-4 rounded-lg shadow">
+      <button
+        onClick={toggleRecording}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+      >
         {recording ? "Stop Recording" : "Start Recording"}
       </button>
-      {audioData && <button onClick={sendAudio}>Transcribe</button>}
+      {audioData && (
+        <button
+          onClick={sendAudio}
+          className="ml-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Transcribe
+        </button>
+      )}
       {audioURL && (
-        <div>
-          <audio controls src={audioURL}>
+        <div className="mt-4">
+          <audio controls src={audioURL} className="w-full">
             Your browser does not support the audio element.
           </audio>
         </div>
