@@ -37,6 +37,7 @@ export default function AudioRecorder() {
   }, [recording]);
 
   const toggleRecording = () => setRecording(!recording);
+  const audioUrl = "../../../../audio";
 
   const sendAudio = async () => {
     const reader = new FileReader();
@@ -50,11 +51,11 @@ export default function AudioRecorder() {
         body: JSON.stringify({ audio: base64String }),
       });
       if (resText.ok) {
-        const data = await resText.json();  // Correctly parsing the JSON response
-        console.log(data);  // Log the data from the speech to text
-        setTranscription(data.transcription)
-
-      } const res = await fetch("/api/speech-to-text", {
+        const data = await resText.json(); // Correctly parsing the JSON response
+        console.log(data); // Log the data from the speech to text
+        setTranscription(data.transcription);
+      }
+      const res = await fetch("/api/speech-to-text", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,10 +73,11 @@ export default function AudioRecorder() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-800 to-purple-800 px-4 py-4">
       <div className="flex flex-col items-center w-full max-w-lg">
         <button
-          className={`px-6 py-3 rounded-lg text-white font-bold text-lg transition-colors shadow-lg ${recording
-            ? "bg-red-600 hover:bg-red-800"
-            : "bg-blue-600 hover:bg-blue-800"
-            }`}
+          className={`px-6 py-3 rounded-lg text-white font-bold text-lg transition-colors shadow-lg ${
+            recording
+              ? "bg-red-600 hover:bg-red-800"
+              : "bg-blue-600 hover:bg-blue-800"
+          }`}
           onClick={toggleRecording}
         >
           {recording ? "Stop Recording" : "Start Recording"}
