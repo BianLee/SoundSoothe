@@ -17,6 +17,7 @@
 /out/
 
 ../client/node_modules
+../server/venv
 
 # production
 /build
