@@ -1,6 +1,7 @@
 import google.generativeai as genai
 import google.ai.generativelanguage as glm
 
+import time
 import textwrap
 import numpy as np
 import pandas as pd
@@ -82,7 +83,7 @@ def generate_music():
     sampling_rate = musicmodel.config.audio_encoder.sampling_rate
 
     # Write the audio to a WAV file (you might want to return this differently, e.g., as a binary stream)
-    output_path = "generated_music6.wav"
+    output_path = f"generated_music_{int(time.time())}.wav"
     scipy.io.wavfile.write(output_path, rate=sampling_rate, data=audio_values[0, 0].numpy())
 
     # Return the path to the generated audio file
