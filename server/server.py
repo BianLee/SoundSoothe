@@ -53,9 +53,6 @@ def embed_fn(title, text):
 
 df['Embeddings'] = df.apply(lambda row: embed_fn(row['Title'], row['Text']), axis=1)
 
-url = "https://oicmgnzwhhlfytonnaeq.supabase.co/"  # Replace with your Supabase project URL
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pY21nbnp3aGhsZnl0b25uYWVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDc0MjUzNjksImV4cCI6MjAyMzAwMTM2OX0.vFEnpkvNEON8n2o1OzeabXBfquiECTnDvtZBykcSrMM"  # Replace with your Supabase anon key
-supabase: Client = create_client(url, key)
 
 def find_best_passage(query, dataframe):
     query_embedding = genai.embed_content(model=model, content=query, task_type="retrieval_query")
@@ -89,16 +86,6 @@ def generate_music():
     # Write the audio to a WAV file (you might want to return this differently, e.g., as a binary stream)
     output_path = f"generated_music_{int(time.time())}.wav"
     scipy.io.wavfile.write(output_path, rate=sampling_rate, data=audio_values[0, 0].numpy())
-
-    file_path = output_path
-    with open(file_path, "rb") as file:
-        file_name = output_path.split("/")[-1]  # Get just the file name
-        storage_response = supabase.storage().from_("music").upload(file_name, file)
-        if storage_response.error:
-            return jsonify({'error': str(storage_response.error)}), 500
-
-    return jsonify({'result': f"File uploaded successfully, path: {file_name}"})
-
 
     # Return the path to the generated audio file
     return jsonify(result=output_path)
