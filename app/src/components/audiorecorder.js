@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import "../../src/app/globals.css";
 
 export default function AudioRecorder() {
   const [recording, setRecording] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [audioData, setAudioData] = useState(null);
-  const [audioURL, setAudioURL] = useState(null); // URL for playing back the audio
+  const [audioURL, setAudioURL] = useState(null);
+  const [transcription, setTranscription] = useState(""); // State to hold the transcription text
 
   useEffect(() => {
     if (recording) {
@@ -39,9 +41,7 @@ export default function AudioRecorder() {
   const sendAudio = async () => {
     const reader = new FileReader();
     reader.onloadend = async () => {
-      const base64String = reader.result.split(",")[1]; // Extract base64 part
-      console.log("Encoded Base64 Audio:", base64String); // Debug: Log the base64 string
-
+      const base64String = reader.result.split(",")[1];
       const res = await fetch("/api/speech-to-text", {
         method: "POST",
         headers: {
@@ -49,36 +49,48 @@ export default function AudioRecorder() {
         },
         body: JSON.stringify({ audio: base64String }),
       });
-
       const data = await res.json();
-      console.log("Server Response:", data); // Debug: Log the server response
+      console.log(data);
+      setTranscription(data); // Assuming 'transcript' is the key for the transcription text
     };
-    reader.readAsDataURL(audioData); // Make sure this is being called correctly
+    reader.readAsDataURL(audioData);
   };
 
   return (
-    <div className="bg-gray-100 p-4 rounded-lg shadow">
-      <button
-        onClick={toggleRecording}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-      >
-        {recording ? "Stop Recording" : "Start Recording"}
-      </button>
-      {audioData && (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-blue-800 to-purple-800 px-4 py-4">
+      <div className="flex flex-col items-center w-full max-w-lg">
         <button
-          onClick={sendAudio}
-          className="ml-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className={`px-6 py-3 rounded-lg text-white font-bold text-lg transition-colors shadow-lg ${
+            recording
+              ? "bg-red-600 hover:bg-red-800"
+              : "bg-blue-600 hover:bg-blue-800"
+          }`}
+          onClick={toggleRecording}
         >
-          Transcribe
+          {recording ? "Stop Recording" : "Start Recording"}
         </button>
-      )}
-      {audioURL && (
-        <div className="mt-4">
-          <audio controls src={audioURL} className="w-full">
-            Your browser does not support the audio element.
-          </audio>
-        </div>
-      )}
+        {audioData && (
+          <button
+            className="mt-4 px-6 py-3 bg-gray-600 hover:bg-gray-800 text-white rounded-lg font-bold text-lg transition-colors shadow-lg"
+            onClick={sendAudio}
+          >
+            Transcribe
+          </button>
+        )}
+        {audioURL && (
+          <div className="mt-4 w-full">
+            <audio controls src={audioURL} className="w-full">
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
+        {transcription && (
+          <div className="mt-4 w-full p-4 bg-white rounded-lg shadow-lg text-gray-800">
+            <h3 className="text-lg font-semibold">Transcription:</h3>
+            <p>{transcription}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
